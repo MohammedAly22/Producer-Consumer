@@ -3,7 +3,6 @@ package metrobooking;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import metrobooking.Ticket;
 
 public class Customer implements Runnable{
     List<Ticket> ticketsWindow;
@@ -31,7 +30,6 @@ public class Customer implements Runnable{
             }
             
             // remove first ticket
-            Thread.sleep(r.nextInt(100, 3000));
             Ticket ticket = ticketsWindow.remove(0);
             System.out.println(Thread.currentThread().getName() + " -> is Buying a ticket");
             ticket.printTicketInfo();
@@ -39,7 +37,7 @@ public class Customer implements Runnable{
             // create list of tickets IDS
             List<Integer> ticketsWindowIDs = new ArrayList<Integer>();
             
-            // print tickets
+            // print tickets in console
             System.out.print("Tickets Window: ");
             for(int j = 0 ; j < ticketsWindow.size() ; j++){
                 System.out.print("[" + ticketsWindow.get(j).ticketID + "]");
@@ -53,7 +51,12 @@ public class Customer implements Runnable{
             page.boughtCount.setText(String.valueOf(++boughtCount));
             int producedCount = Integer.parseInt(page.producedCount.getText());
             page.remainingCount.setText(String.valueOf(producedCount - boughtCount));
+            
+            // notify all suppliers threads
             ticketsWindow.notifyAll();
+            
+            // simulating processing time
+            Thread.sleep(1000);
         }
     }
 }
