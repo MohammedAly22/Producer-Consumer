@@ -13,7 +13,7 @@ public class page extends javax.swing.JFrame {
     }
     
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -70,7 +70,7 @@ public class page extends javax.swing.JFrame {
         });
 
         ticketWindow.setBackground(new java.awt.Color(11, 12, 38));
-        ticketWindow.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        ticketWindow.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         ticketWindow.setForeground(new java.awt.Color(255, 153, 0));
         ticketWindow.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         ticketWindow.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 255), 1, true));
@@ -208,57 +208,92 @@ public class page extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void numCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numCustomersActionPerformed
+    private void numCustomersActionPerformed(java.awt.event.ActionEvent evt) {                                             
         // TODO add your handling code here:
-    }//GEN-LAST:event_numCustomersActionPerformed
+    }                                            
 
-    private void ticketWindowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ticketWindowActionPerformed
+    private void ticketWindowActionPerformed(java.awt.event.ActionEvent evt) {                                             
         // TODO add your handling code here:
-    }//GEN-LAST:event_ticketWindowActionPerformed
+    }                                            
 
-    private void numSuppliersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numSuppliersActionPerformed
+    private void numSuppliersActionPerformed(java.awt.event.ActionEvent evt) {                                             
         
-    }//GEN-LAST:event_numSuppliersActionPerformed
+    }                                            
 
-    private void startBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startBtnActionPerformed
-        Thread[] suppliersThreads = createSuppliersThreads();
-        Thread[] customersThreads = createCustomersThreads();
+    private void startBtnActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        String numSuppliersStr = numSuppliers.getText();
+        String numCustomersStr = numCustomers.getText();
         
-        if(suppliersThreads.length == 0 || customersThreads.length == 0){
-            JOptionPane.showMessageDialog(rootPane, "Suppliers And Customers should not be equal 0 !", "", JOptionPane.ERROR_MESSAGE);
+        if(!validationOnInput(numSuppliersStr, numCustomersStr)){
+            numSuppliersStr = numSuppliers.getText();
+            numCustomersStr = numCustomers.getText();
         }
         else{
-            for (int i = 0 ; i < suppliersThreads.length ; i++){
-                suppliersThreads[i] = new Thread(new Supplier(sharedList, MAX_SIZE));
-                suppliersThreads[i].setName("SUPPLIER " + (i+1));
-                suppliersThreads[i].start();
-             }
+            int numOfSuppliers = Integer.parseInt(numSuppliersStr);
+            int numOfCustomers = Integer.parseInt(numCustomersStr);
 
-            for (int i = 0 ; i < customersThreads.length ; i++){
-                customersThreads[i] = new Thread(new Customer(sharedList));
-                customersThreads[i].setName("CUSTOMER " + (i+1));
-                customersThreads[i].start();
+            Supplier[] suppliers = new Supplier[numOfSuppliers];
+            Customer[] customers = new Customer[numOfCustomers];
+
+            for(int i = 0 ; i < numOfSuppliers ; i++){
+                suppliers[i] = new Supplier(sharedList, MAX_SIZE);
+                new Thread(suppliers[i], "Supplier "+(i+1)).start();
+            }
+
+            for(int i = 0 ; i < numOfCustomers ; i++){
+                customers[i] = new Customer(sharedList);
+                new Thread(customers[i], "Customer "+(i+1)).start();
             }
         }
-    }//GEN-LAST:event_startBtnActionPerformed
+    }                                        
 
-    private void producedCountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_producedCountActionPerformed
+    private boolean validationOnInput(String numberSuppliersStr, String numberCustomersStr){
+        if(isNumeric(numberSuppliersStr) && isNumeric(numberCustomersStr)){
+            int numberSuppliers = Integer.parseInt(numberSuppliersStr);
+            int numberCustomers = Integer.parseInt(numberCustomersStr);
+            
+            if(numberSuppliers == 0 || numberCustomers == 0){
+                JOptionPane.showMessageDialog(rootPane, "Supplier and customer cannot be equal 0", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+        else{
+            JOptionPane.showMessageDialog(rootPane, "Please, enter a numeric value for supplier and customer", "", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+    
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            int i = Integer.parseInt(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+    private void producedCountActionPerformed(java.awt.event.ActionEvent evt) {                                              
         // TODO add your handling code here:
-    }//GEN-LAST:event_producedCountActionPerformed
+    }                                             
 
-    private void boughtCountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boughtCountActionPerformed
+    private void boughtCountActionPerformed(java.awt.event.ActionEvent evt) {                                            
         // TODO add your handling code here:
-    }//GEN-LAST:event_boughtCountActionPerformed
+    }                                           
 
-    private void remainingCountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_remainingCountActionPerformed
+    private void remainingCountActionPerformed(java.awt.event.ActionEvent evt) {                                               
         // TODO add your handling code here:
-    }//GEN-LAST:event_remainingCountActionPerformed
+    }                                              
 
     private Thread[] createSuppliersThreads(){
         String numSuppliersString = numSuppliers.getText();
-        int numberOfSuppliers = 0;
+        int numberOfSuppliers;
         
         if(numSuppliersString.equals("")){
             JOptionPane.showMessageDialog(rootPane, "Please, enter number of suppliers!", "", JOptionPane.ERROR_MESSAGE);
@@ -271,7 +306,7 @@ public class page extends javax.swing.JFrame {
     
     private Thread[] createCustomersThreads(){
         String numCustomersString = numCustomers.getText();
-        int numberOfCustomers = 0;
+        int numberOfCustomers;
         
         if(numCustomersString.equals("")){
             JOptionPane.showMessageDialog(rootPane, "Please, enter number of customers!", "", JOptionPane.ERROR_MESSAGE);
@@ -290,7 +325,7 @@ public class page extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     public static javax.swing.JTextField boughtCount;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField numCustomers;
@@ -304,6 +339,6 @@ public class page extends javax.swing.JFrame {
     public static javax.swing.JTextField remainingCount;
     private javax.swing.JButton startBtn;
     public static javax.swing.JTextField ticketWindow;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 
 }
