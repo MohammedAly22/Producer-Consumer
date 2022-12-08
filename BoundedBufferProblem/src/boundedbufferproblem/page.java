@@ -13,7 +13,7 @@ public class page extends javax.swing.JFrame {
     }
     
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -212,79 +212,88 @@ public class page extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void numConsumersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numConsumersActionPerformed
+    private void numConsumersActionPerformed(java.awt.event.ActionEvent evt) {                                             
         // TODO add your handling code here:
-    }//GEN-LAST:event_numConsumersActionPerformed
+    }                                            
 
-    private void sharedBufferActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sharedBufferActionPerformed
+    private void sharedBufferActionPerformed(java.awt.event.ActionEvent evt) {                                             
         // TODO add your handling code here:
-    }//GEN-LAST:event_sharedBufferActionPerformed
+    }                                            
 
-    private void numProducersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numProducersActionPerformed
-        
-    }//GEN-LAST:event_numProducersActionPerformed
+    private void numProducersActionPerformed(java.awt.event.ActionEvent evt) {                                             
+        // TODO add your handling code here:
+    }                                            
 
-    private void startBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startBtnActionPerformed
-        Thread[] producersThreads = createProducersThreads();
-        Thread[] consumersThreads = createConsumersThreads();
+    private void startBtnActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        String numProducersStr = numProducers.getText();
+        String numConsumersStr = numConsumers.getText();
         
-        if(producersThreads.length == 0 || consumersThreads.length == 0){
-            JOptionPane.showMessageDialog(rootPane, "Producers And Consumers should not be equal 0 !", "", JOptionPane.ERROR_MESSAGE);
+        if(!validationOnInput(numProducersStr, numConsumersStr)){
+            numProducersStr = numProducers.getText();
+            numConsumersStr = numConsumers.getText();
         }
         else{
-            for (int i = 0 ; i < producersThreads.length ; i++){
-                producersThreads[i] = new Thread(new Producer(sharedList, MAX_SIZE));
-                producersThreads[i].setName("PRODUCER " + (i+1));
-                producersThreads[i].start();
-             }
+            int numOfProducers = Integer.parseInt(numProducersStr);
+            int numOfConsumers = Integer.parseInt(numConsumersStr);
 
-            for (int i = 0 ; i < consumersThreads.length ; i++){
-                consumersThreads[i] = new Thread(new Consumer(sharedList));
-                consumersThreads[i].setName("CONSUMER " + (i+1));
-                consumersThreads[i].start();
+            Producer[] producers = new Producer[numOfProducers];
+            Consumer[] consumers = new Consumer[numOfConsumers];
+
+            for(int i = 0 ; i < numOfProducers ; i++){
+                producers[i] = new Producer(sharedList, MAX_SIZE);
+                new Thread(producers[i], "Producer "+(i+1)).start();
+            }
+
+            for(int i = 0 ; i < numOfConsumers ; i++){
+                consumers[i] = new Consumer(sharedList);
+                new Thread(consumers[i], "Consumer "+(i+1)).start();
             }
         }
-    }//GEN-LAST:event_startBtnActionPerformed
-
-    private void producedCountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_producedCountActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_producedCountActionPerformed
-
-    private void consumedCountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consumedCountActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_consumedCountActionPerformed
-
-    private void remainingCountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_remainingCountActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_remainingCountActionPerformed
-
-    private Thread[] createProducersThreads(){
-        String numProducersString = numProducers.getText();
-        int numberOfProducers = 0;
-        
-        if(numProducersString.equals("")){
-            JOptionPane.showMessageDialog(rootPane, "Please, enter number of producers!", "", JOptionPane.ERROR_MESSAGE);
+    }                                        
+    
+    private boolean validationOnInput(String numberProducersStr, String numberConsumersStr){
+        if(isNumeric(numberProducersStr) && isNumeric(numberConsumersStr)){
+            int numberProducers = Integer.parseInt(numberProducersStr);
+            int numberConsumers = Integer.parseInt(numberConsumersStr);
+            
+            if(numberProducers == 0 || numberConsumers == 0){
+                JOptionPane.showMessageDialog(rootPane, "producer and consumer cannot be equal 0", "", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            else{
+                return true;
+            }
         }
-        numberOfProducers = Integer.parseInt(numProducersString);
-        Thread[] producersThreads = new Thread[numberOfProducers];
-
-        return producersThreads;
+        else{
+            JOptionPane.showMessageDialog(rootPane, "Please, enter a numeric value for producer and consumer", "", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
     }
     
-    private Thread[] createConsumersThreads(){
-        String numConsumersString = numConsumers.getText();
-        int numberOfConsumers = 0;
-        
-        if(numConsumersString.equals("")){
-            JOptionPane.showMessageDialog(rootPane, "Please, enter number of consumers!", "", JOptionPane.ERROR_MESSAGE);
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
         }
-        numberOfConsumers = Integer.parseInt(numConsumersString);
-        Thread[] consumersThreads = new Thread[numberOfConsumers];
+        try {
+            int i = Integer.parseInt(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+}
+    private void producedCountActionPerformed(java.awt.event.ActionEvent evt) {                                              
+        // TODO add your handling code here:
+    }                                             
 
-        return consumersThreads;
-    }
+    private void consumedCountActionPerformed(java.awt.event.ActionEvent evt) {                                              
+        // TODO add your handling code here:
+    }                                             
+
+    private void remainingCountActionPerformed(java.awt.event.ActionEvent evt) {                                               
+        // TODO add your handling code here:
+    }                                              
     
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -294,7 +303,7 @@ public class page extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     public static javax.swing.JTextField consumedCount;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField numConsumers;
@@ -308,6 +317,6 @@ public class page extends javax.swing.JFrame {
     public static javax.swing.JTextField remainingCount;
     public static javax.swing.JTextField sharedBuffer;
     private javax.swing.JButton startBtn;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 
 }
